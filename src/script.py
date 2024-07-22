@@ -22,7 +22,7 @@ def respond_to_query(query):
     # Call OpenAI's API to get a response
     response = client.chat.completions.create(model="gpt-4o-mini",  
     messages=[
-        {"role": "system", "content": "You are a helpful assistant."},
+        {"role": "system", "content": "You are a helpful and overly kind assistant."},
         {"role": "user", "content": query}
     ],
     max_tokens=150,
@@ -36,9 +36,9 @@ def get_current_time():
 def get_weather():
     # Call OpenMeteo's API to get the current temperature for Utrecht
     url = "https://api.open-meteo.com/v1/forecast"
-    params = { "latitude": 52.091259,
-	           "longitude": 5.122750,
-               "current": "temperature_2m"}
+    params = {"latitude": 52.091259,
+              "longitude": 5.122750,
+              "current": "temperature_2m"}
     response = openmeteo.weather_api(url, params=params)
     current_temp = round(response[0].Current().Variables(0).Value(),2)
     return f"The current temperature in Utrecht is {current_temp} degrees."
