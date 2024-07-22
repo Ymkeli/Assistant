@@ -1,0 +1,4 @@
+.env
+assistantenv/
+.DS_Store
+.cache.sqlite
