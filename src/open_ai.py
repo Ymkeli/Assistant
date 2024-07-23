@@ -1,5 +1,6 @@
 from openai import OpenAI
 from dotenv import load_dotenv
+from datetime import datetime
 import os
 
 # Load environment variables from .env file
@@ -18,5 +19,23 @@ def query_openai(query):
             ],
         max_tokens=150,
         temperature=0.7)
+    return_message = response.choices[0].message.content.strip()
+    return return_message
+
+def query_datetime(query):
+    # Use OpenAI to obtain a date-time stamp that is X amount of time from the current time, where X is defined in query
+    
+    # Concat the current date and time to the user query
+    now = datetime.now()
+    query = now.strftime('%d-%m-%Y %H:%M:%S') + query
+    
+    response = client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[
+            {"role": "system", "content": "You will be provided with a date-time stamp with the current time and asked to increment this time by a certain amount. Your task is to provide a new date-time stamp in the same format. Return only the new timestamp and nothing more."},
+            {"role": "user", "content": query}
+            ],
+        max_tokens=150,
+        temperature=1)
     return_message = response.choices[0].message.content.strip()
     return return_message

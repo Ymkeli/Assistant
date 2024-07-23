@@ -36,8 +36,9 @@ if __name__ == "__main__":
             response = get_current_time()
         elif 'weather' in user_query.lower():
             response = get_weather()
-        elif 'set_reminder' in user_query.lower():
-            response = set_reminder()
+        elif 'reminder' in user_query.lower():
+            now = datetime.now()
+            response = set_reminder(user_query)
         else:
             response = query_openai(user_query)
 
