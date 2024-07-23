@@ -1,6 +1,5 @@
 from openai import OpenAI
 from dotenv import load_dotenv
-from datetime import datetime
 import os
 
 # Load environment variables from .env file
@@ -24,11 +23,6 @@ def query_openai(query):
 
 def query_datetime(query):
     # Use OpenAI to obtain a date-time stamp that is X amount of time from the current time, where X is defined in query
-    
-    # Concat the current date and time to the user query
-    now = datetime.now()
-    query = now.strftime('%d-%m-%Y %H:%M:%S') + query
-    
     response = client.chat.completions.create(
         model="gpt-4o-mini",
         messages=[
