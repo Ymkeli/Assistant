@@ -2,3 +2,4 @@
 assistantenv/
 .DS_Store
 .cache.sqlite
+__pycache__/

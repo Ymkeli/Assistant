@@ -1,33 +1,14 @@
-from openai import OpenAI
 import openmeteo_requests
 from datetime import datetime
 import requests_cache
 from retry_requests import retry
-from dotenv import load_dotenv
-import os
-
-# Load environment variables from .env file
-load_dotenv()
-
-# Setup the OpenAI client
-openai_api_key = os.getenv('OPENAI_API_KEY')
-client = OpenAI(api_key=openai_api_key)
+from reminder import set_reminder
+from open_ai import query_openai
 
 # Setup the Open-Meteo API client with cache and retry on error
 cache_session = requests_cache.CachedSession('.cache', expire_after = 3600)
 retry_session = retry(cache_session, retries = 5, backoff_factor = 0.2)
 openmeteo = openmeteo_requests.Client(session = retry_session)
-
-def respond_to_query(query):
-    # Call OpenAI's API to get a response
-    response = client.chat.completions.create(model="gpt-4o-mini",  
-    messages=[
-        {"role": "system", "content": "You are a helpful and overly kind assistant."},
-        {"role": "user", "content": query}
-    ],
-    max_tokens=150,
-    temperature=0.7)
-    return response.choices[0].message.content.strip()
 
 def get_current_time():
     now = datetime.now()
@@ -55,7 +36,9 @@ if __name__ == "__main__":
             response = get_current_time()
         elif 'weather' in user_query.lower():
             response = get_weather()
+        elif 'reminder' in user_query.lower():
+            response = set_reminder(user_query)
         else:
-            response = respond_to_query(user_query)
+            response = query_openai(user_query)
 
         print(f"Assistant: {response}")
