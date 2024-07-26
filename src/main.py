@@ -3,7 +3,7 @@ from datetime import datetime
 import requests_cache
 from retry_requests import retry
 from reminder import set_reminder
-from open_ai import query_openai
+from open_ai.requests import query_openai
 from random_numbers import get_random_numbers
 
 # Setup the Open-Meteo API client with cache and retry on error

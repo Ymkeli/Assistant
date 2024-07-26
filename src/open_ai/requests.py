@@ -1,6 +1,7 @@
 from openai import OpenAI
 from dotenv import load_dotenv
 import os
+import open_ai.tools as tools
 
 # Load environment variables from .env file
 load_dotenv()
@@ -34,19 +35,6 @@ def query_datetime(query):
     return_message = response.choices[0].message.content.strip()
     return return_message
 
-# Description of the random numbers function to use as a tool
-tool = {"type": "function",
-        "function": {"name": "get_random_numbers",
-                     "description": "Generates a list of random numbers",
-                     "parameters": {"type": "object",
-                                    "properties": {"min": {"type": "integer",
-                                                           "description": "the lower end of the input range"},
-                                                   "max": {"type": "integer",
-                                                            "description": "the higher end of the input range"},
-                                                   "count": {"type": "integer",
-                                                             "description": "the number of random integers requested"}
-        }}}}
-
 def query_random_number_api(query):
     # Use openAI to create the paramaters for a random number request
     response = client.chat.completions.create(
@@ -57,7 +45,7 @@ def query_random_number_api(query):
             ],
         max_tokens=150,
         temperature=1,
-        tools = [tool]
+        tools = [tools.random_numbers]
     )
     response_function = response.choices[0].message.tool_calls[0].function
     return response_function

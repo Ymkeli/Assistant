@@ -1,6 +1,6 @@
 import requests
 import json
-from open_ai import query_random_number_api
+from open_ai.requests import query_random_number_api
         
 def get_random_numbers_request(params):
     # Does a GET request on the random number API

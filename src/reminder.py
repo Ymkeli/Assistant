@@ -1,4 +1,4 @@
-from open_ai import query_datetime
+from open_ai.requests import query_datetime
 from datetime import datetime
 import threading
 import re

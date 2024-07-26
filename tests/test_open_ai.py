@@ -1,5 +1,6 @@
-from open_ai import query_datetime, query_random_number_api, tool
+from open_ai.requests import query_datetime, query_random_number_api
 from unittest.mock import MagicMock
+import open_ai.tools
 
 def mock_response(content):
     # Mock the response of the open AI API. 
@@ -39,7 +40,7 @@ def mock_response_function(name, arguments):
 
 def test_query_datetime(mocker):
     # Mock the response of open AI API
-    mock_create = mocker.patch('open_ai.client.chat.completions.create')
+    mock_create = mocker.patch('open_ai.requests.client.chat.completions.create')
     mock_create.return_value = mock_response("24-07-2024 15:00:32")
     
     # Query API
@@ -60,7 +61,7 @@ def test_query_datetime(mocker):
     
 def test_query_random_number_api(mocker):
     # Mock the response of open AI API
-    mock_create = mocker.patch('open_ai.client.chat.completions.create')
+    mock_create = mocker.patch('open_ai.requests.client.chat.completions.create')
     mock_create.return_value = mock_response_function('get_random_numbers',
                                                       [43,66])
 
@@ -80,5 +81,5 @@ def test_query_random_number_api(mocker):
             ],
         max_tokens=150,
         temperature=1,
-        tools = [tool]
+        tools = [open_ai.tools.random_numbers]
     )
