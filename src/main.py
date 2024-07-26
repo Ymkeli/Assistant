@@ -4,6 +4,7 @@ import requests_cache
 from retry_requests import retry
 from reminder import set_reminder
 from open_ai import query_openai
+from random_numbers import get_random_numbers
 
 # Setup the Open-Meteo API client with cache and retry on error
 cache_session = requests_cache.CachedSession('.cache', expire_after = 3600)
@@ -38,6 +39,8 @@ if __name__ == "__main__":
             response = get_weather()
         elif 'reminder' in user_query.lower():
             response = set_reminder(user_query)
+        elif 'random number' in user_query.lower():
+            response = get_random_numbers(user_query)
         else:
             response = query_openai(user_query)
 
