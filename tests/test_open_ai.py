@@ -1,4 +1,4 @@
-from open_ai.requests import query_datetime, query_random_number_api
+from open_ai.requests import query_open_ai
 from unittest.mock import MagicMock
 import open_ai.tools
 
@@ -38,28 +38,33 @@ def mock_response_function(name, arguments):
     mock_response.object = "chat.completion"
     return mock_response
 
-def test_query_datetime(mocker):
+def test_query_open_ai(mocker):
+    """TEST 1 - Open AI call that returns content"""
     # Mock the response of open AI API
     mock_create = mocker.patch('open_ai.requests.client.chat.completions.create')
-    mock_create.return_value = mock_response("24-07-2024 15:00:32")
+    mock_create.return_value = mock_response("A spider has eight legs.")
     
     # Query API
-    query = "24-07-2024 14:50:32 Can you set a reminder in 10 minutes?"
-    result = query_datetime(query)
+    query = "How many legs does a spider have?"
+    result = query_open_ai(query)
 
     # Assert that the response satisfies expectations
-    assert result == "24-07-2024 15:00:32"
+    assert result.content == "A spider has eight legs."
     mock_create.assert_called_once_with(
         model="gpt-4o-mini",
         messages=[
-            {"role": "system", "content": "You will be provided with a date-time stamp with the current time and asked to increment this time by a certain amount. Your task is to provide a new date-time stamp in the same format. Return only the new timestamp and nothing more."},
+            {"role": "system", "content": "You are a helpful assistant. You help by returning the right function and arguments corresponding to the question. If there is no function that matches the question, you answer by your own knowledge."},
             {"role": "user", "content": query}
-        ],
+            ],
         max_tokens=150,
-        temperature=1
+        temperature=1,
+        tools = [open_ai.tools.random_numbers,
+                 open_ai.tools.current_time,
+                 open_ai.tools.reminder,
+                 open_ai.tools.weather]
     )
     
-def test_query_random_number_api(mocker):
+    """TEST 2 - Open AI call that returns a tool"""
     # Mock the response of open AI API
     mock_create = mocker.patch('open_ai.requests.client.chat.completions.create')
     mock_create.return_value = mock_response_function('get_random_numbers',
@@ -67,19 +72,21 @@ def test_query_random_number_api(mocker):
 
     # Query API
     query = "Can you return ro random numbers between 1 and 100?"
-    result = query_random_number_api(query)
-    print(result)
+    result = query_open_ai(query)
 
     # Assert that the response satisfies expectations
-    assert result.name == 'get_random_numbers' 
-    assert result.arguments == "[43, 66]"
+    assert result.tool_calls[0].function.name == 'get_random_numbers' 
+    assert result.tool_calls[0].function.arguments == "[43, 66]"
     mock_create.assert_called_once_with(
-        model="gpt-4o-mini",
-        messages=[
-            {"role": "system", "content": "You will be asked for one or more random numbers in a specific range. Create the parameters for a function call for the random number api."},
-            {"role": "user", "content": query}
-            ],
-        max_tokens=150,
-        temperature=1,
-        tools = [open_ai.tools.random_numbers]
+    model="gpt-4o-mini",
+    messages=[
+        {"role": "system", "content": "You are a helpful assistant. You help by returning the right function and arguments corresponding to the question. If there is no function that matches the question, you answer by your own knowledge."},
+        {"role": "user", "content": query}
+        ],
+    max_tokens=150,
+    temperature=1,
+    tools = [open_ai.tools.random_numbers,
+             open_ai.tools.current_time,
+             open_ai.tools.reminder,
+             open_ai.tools.weather]
     )
