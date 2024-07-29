@@ -21,7 +21,7 @@ if __name__ == "__main__":
             break
         
         message_history.append({"role": "user", "content": user_query})
-        openai_response = query_open_ai(user_query, message_history)
+        openai_response = query_open_ai(message_history)
         
         if openai_response.content == None:
             f_response = openai_response.tool_calls[0].function

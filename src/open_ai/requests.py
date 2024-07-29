@@ -13,7 +13,7 @@ load_dotenv()
 openai_api_key = os.getenv('OPENAI_API_KEY')
 client = OpenAI(api_key=openai_api_key)
 
-def query_open_ai(query, messages):
+def query_open_ai(messages):
     # Use openAI to answer the query, or to make the right function call.
     response = client.chat.completions.create(
         model="gpt-4o-mini",
