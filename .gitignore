@@ -3,3 +3,4 @@ assistantenv/
 .DS_Store
 .cache.sqlite
 __pycache__/
+assistant.egg-info/
