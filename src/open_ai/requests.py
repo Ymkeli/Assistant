@@ -3,6 +3,9 @@ from dotenv import load_dotenv
 import os
 import open_ai.tools as tools
 
+# Assistant prompt
+assistant_prompt = {"role": "system", "content": "You are a helpful assistant. You assist me by calling specific tools to retrieve random numbers, the current time and weather data and to set reminders."}
+
 # Load environment variables from .env file
 load_dotenv()
 
@@ -10,14 +13,11 @@ load_dotenv()
 openai_api_key = os.getenv('OPENAI_API_KEY')
 client = OpenAI(api_key=openai_api_key)
 
-def query_open_ai(query):
+def query_open_ai(query, messages):
     # Use openAI to answer the query, or to make the right function call.
     response = client.chat.completions.create(
         model="gpt-4o-mini",
-        messages=[
-            {"role": "system", "content": "You are a helpful assistant. You help by returning the right function and arguments corresponding to the question. If there is no function that matches the question, you answer by your own knowledge."},
-            {"role": "user", "content": query}
-            ],
+        messages=messages,
         max_tokens=150,
         temperature=1,
         tools = [tools.random_numbers,
